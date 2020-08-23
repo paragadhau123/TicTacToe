@@ -15,3 +15,15 @@ function resetTheBoard()
 resetTheBoard
 
 echo ${boardOfTicTacToe[@]}
+
+function whoPlayFirst()
+{
+ resultOfToss=$((RANDOM%2))
+ if [ $resultOfToss -eq 0 ]
+ then
+     echo "Player play First....."
+ else
+     echo "Computer play First..."
+ fi
+}
+whoPlayFirst
