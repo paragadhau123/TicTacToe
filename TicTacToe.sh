@@ -25,7 +25,7 @@ function resetTheBoard() {
 	for (( i=1; i<=$NUM_OF_POSITION; i++ ))
 	do
 		boardOfTicTacToe[$i]='-'
-                
+
 	done
 }
 
@@ -86,6 +86,7 @@ function computer()
 	winBlockPlayMove $computer
 	winBlockPlayMove $player
 	checkInCorners
+        checkForCentre
 	if [ $computerWinMove = false ]
 	then
 
@@ -270,6 +271,21 @@ function play()
 	fi
 
  done
+}
+function checkForMiddles()
+{
+	if [ $computerWinMove = false ]
+   then
+            if [ ${boardOfTicTacToe[$counter]} == '-' ]
+            then
+               computerPosition=$(($counter+4))
+               boardOfTicTacToe[$computerPosition]=$computer
+               computerWinMove=true
+            break
+            fi
+
+   fi
+
 }
 function displayBoard()
 {
