@@ -154,29 +154,6 @@ function checkInCorners
 	fi
 }
 
-function checkInCorners
-{
-	 if [ $computerWinMove = false ]
-   then
-		for((i=1; i<=MAX_BOARD_POSITION; i=$(($i+2)) ))
-		do
-				if [ ${boardOfTicTacToe[$i]} == '-' ]
-				then
-					computerPosition=$i
-            	boardOfTicTacToe[$computerPosition]=$computer
-            	computerWinMove=true
-            break
-				fi
-				if [ $i -eq 3 ]
-				then
-					i=$(($i+2))
-				fi
-		done
-	fi
-}
-
-
-
 function winInRowsAndColumns()
 {
 	position=1
@@ -196,9 +173,6 @@ function winInRowsAndColumns()
 		temp=$(($temp+1))
 	done
 }
-
-
-
 
 function winInDiagonals()
 {
@@ -272,17 +246,26 @@ function play()
 
  done
 }
-function checkForMiddles()
+function checkForCentre()
 {
 	if [ $computerWinMove = false ]
    then
+       for((counter=2; counter<=$(($MAX_BOARD_POSITION-1)); counter=$(($counter+2)) ))
+      do
             if [ ${boardOfTicTacToe[$counter]} == '-' ]
             then
-               computerPosition=$(($counter+4))
+               computerPosition=$counter
                boardOfTicTacToe[$computerPosition]=$computer
                computerWinMove=true
             break
             fi
+      if [[ $counter -eq $(($MAX_BOARD_POSITION-1)) ]] && [[ $computerWinMove = false ]] && [[ ${boardOfTicTacToe[$counter]} == '-' ]]
+				then
+					computerPosition=$i
+               boardOfTicTacToe[$computerPosition]=$computer
+               computerWinMove=true
+				fi
+      done
 
    fi
 
