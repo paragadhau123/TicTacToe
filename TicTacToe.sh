@@ -1,15 +1,19 @@
 #!/bin/bash -x
 echo "*************************Welcome to TIC-TAC-TOE WORLD****************************"
 # Constant
+MAX_BOARD_POSITION=9
 NUM_OF_POSITION=9
-HEAD=0
 # Global
+playerPosition=0
+computerPosition=0
 player=''
 computer=''
+nonEmptyBlockCount=1
 won=false
-number=0
-switchPlayers=false
+whoPlays=false
 computerWinMove=false
+computerblockedMove=false
+
 declare -a boardOfTicTacToe
 
 function resetTheBoard()
@@ -35,23 +39,6 @@ function symbolAssignment()
 
  fi
  echo $resultOfToss
-}
-function whoPlayFirst()
-{
- toss=$(( RANDOM%2 ))
-
-	if [ $toss -eq $HEAD ]
-	then
-		echo "Player will play first"
-		symbolAssignment
-		displayBoard
-		switchPlayers=false
-	else
-		echo "Computer will play first"
-		symbolAssignment
-		displayBoard
-		switchPlayers=true
-	fi
 }
 function player() {
 	echo "Player's Turn"
