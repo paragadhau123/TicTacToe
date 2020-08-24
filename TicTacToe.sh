@@ -59,6 +59,26 @@ function player() {
             fi
 	fi
 }
+function checkCorners
+{
+	 if [ $computerWinMove = false ]
+   then
+		for((i=1; i<=MAX_BOARD_POSITION; i=$(($i+2)) ))
+		do
+				if [ ${boardOfTicTacToe[$i]} == '-' ]
+				then
+					computerPosition=$i
+            	boardOfTicTacToe[$computerPosition]=$computer
+            	computerWinMove=true
+            break
+				fi
+				if [ $i -eq 3 ]
+				then
+					i=$(($i+2))
+				fi
+		done
+	fi
+}
 function checkToWin()
 {
 	counter=1
