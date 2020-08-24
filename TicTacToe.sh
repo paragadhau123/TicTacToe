@@ -3,7 +3,7 @@
 echo "*************************Welcome to TICTACTOE WORLD****************************"
 
 
-MAX_BOARD_POSITION=9
+MAX_POSITION=9
 NUM_OF_POSITION=9
 
 playerPosition=0
@@ -20,7 +20,8 @@ computerblockedMove=false
 declare -a boardOfTicTacToe
 
 
-function resetTheBoard() {
+function resetTheBoard()
+{
         local count1=1;
 	for (( i=1; i<=$NUM_OF_POSITION; i++ ))
 	do
@@ -51,15 +52,16 @@ function symbolAssignment()
 
 
 
-function player()
+function playerMove()
 {
-	read -p "Enter  position Number to put $player at Empty Position " playerPosition
+	read -p "ENTER THE POSITION BETWEEN [1-9] : " playerPosition
 	if [ ${boardOfTicTacToe[$playerPosition]} == '-' ]
 	then
 		boardOfTicTacToe[$playerPosition]=$player
 	else
-		echo ":Position Occupied Please enter new Position"
-		player
+		echo "******ALREADY OCCUPIED*********"
+                echo "ENTER AGAIN"
+		playerMove
 	fi
 	whoPlays=false
 }
@@ -71,30 +73,30 @@ function winBlockPlayMove()
 	leftDiagonalValue=4
 	rightDiagonalValue=2
 
-	checkWinningMove $rowValue $1 $columnValue
-	checkWinningMove $columnValue $1 $rowValue
-	checkWinningMove $leftDiagonalValue $1 0
-	checkWinningMove $rightDiagonalValue $1 0
+	checkWinningMove $rowValue  $columnValue  $1
+	checkWinningMove $columnValue  $rowValue $1
+	checkWinningMove $leftDiagonalValue 0 $1
+	checkWinningMove $rightDiagonalValue 0 $1
 
 }
 
-function computer()
+function computerMove()
 {
 	computerWinMove=false
 	echo "Computer is playing"
 	sleep 1
 	winBlockPlayMove $computer
 	winBlockPlayMove $player
-	checkInCorners
-        checkForCentre
+	checkingEmptyCorners
+        checkForSides
 	if [ $computerWinMove = false ]
 	then
 
 		computerPosition=$((RANDOM%9+1))
 		if [[ ${boardOfTicTacToe[$computerPosition]} != '-' ]]
 		then
-			echo "Computer played Wrong move "
-			computer
+			echo "Occupied move!!!! "
+			computerMove
 		else
 			boardOfTicTacToe[$computerPosition]=$computer
 		fi
@@ -105,7 +107,7 @@ function computer()
 function checkWinningMove()
 {
 	counter=1
-	symbol=$2
+	symbol=$3
 	if [ $computerWinMove = false ]
 	then
 		for (( i=1; i<=3; i++ ))
@@ -129,27 +131,27 @@ function checkWinningMove()
 				computerWinMove=true
 				break
 			fi
-			counter=$(($counter+$3))
+			counter=$(($counter+$2))
 		done
 	fi
 }
-function checkInCorners
+function checkingEmptyCorners
 {
 	 if [ $computerWinMove = false ]
    then
-		for((i=1; i<=MAX_BOARD_POSITION; i=$(($i+2)) ))
+		for((counter=1; counter<=MAX_POSITION; counter=$(($counter+2)) ))
 		do
-				if [ ${boardOfTicTacToe[$i]} == '-' ]
-				then
-					computerPosition=$i
-            	boardOfTicTacToe[$computerPosition]=$computer
-            	computerWinMove=true
-            break
-				fi
-				if [ $i -eq 3 ]
-				then
-					i=$(($i+2))
-				fi
+				if [ ${boardOfTicTacToe[$counter]} == '-' ]
+			then
+				computerPosition=$counter
+            			boardOfTicTacToe[$computerPosition]=$computer
+            			computerWinMove=true
+           			break
+			fi
+			if [ $counter -eq 3 ]
+			then
+				counter=$(($counter+2))
+                        fi
 		done
 	fi
 }
@@ -198,11 +200,11 @@ function winInDiagonals()
 }
 
 
-function checkGameTie()
+function checkIfGameTie()
 {
 	while [ ${boardOfTicTacToe[$nonEmptyBlockCount]} != '-' ]
 	do
-		if [ $nonEmptyBlockCount -eq $MAX_BOARD_POSITION ]
+		if [ $nonEmptyBlockCount -eq $MAX_POSITION ]
 		then
 			displayBoard
 			echo "Game Is Tie"
@@ -235,22 +237,22 @@ function play()
 	displayBoard
 	if [ $whoPlays == true ]
 	then
-		player
+		playerMove
 		checkWon $player
-		checkGameTie
+		checkIfGameTie
 	else
-		computer
+		computerMove
 		checkWon $computer
-		checkGameTie
+		checkIfGameTie
 	fi
 
  done
 }
-function checkForCentre()
+function checkForSides()
 {
 	if [ $computerWinMove = false ]
    then
-       for((counter=2; counter<=$(($MAX_BOARD_POSITION-1)); counter=$(($counter+2)) ))
+       for((counter=2; counter<=$(($MAX_POSITION-1)); counter=$(($counter+2)) ))
       do
             if [ ${boardOfTicTacToe[$counter]} == '-' ]
             then
@@ -259,13 +261,14 @@ function checkForCentre()
                computerWinMove=true
             break
             fi
-      if [[ $counter -eq $(($MAX_BOARD_POSITION-1)) ]] && [[ $computerWinMove = false ]] && [[ ${boardOfTicTacToe[$counter]} == '-' ]]
-				then
-					computerPosition=$i
+      if [[ $counter -eq $(($MAX_POSITION-1)) ]] && [[ $computerWinMove = false ]] && [[ ${boardOfTicTacToe[$counter]} == '-' ]]
+	then
+               computerPosition=$counter
                boardOfTicTacToe[$computerPosition]=$computer
                computerWinMove=true
-				fi
-      done
+	fi
+
+       done
 
    fi
 
@@ -281,7 +284,7 @@ function displayBoard()
    echo "    |---|---|---|"
 
 }
-
+#-----------------------main------------------------------
 resetTheBoard
 symbolAssignment
 play
